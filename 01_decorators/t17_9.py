@@ -9,3 +9,7 @@ def fib(n):
 for i in range(3, 10):
     print(i, fib(i))
 
+val = fib(3)
+proc = fib
+
+print(val, proc)
