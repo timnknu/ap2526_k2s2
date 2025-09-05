@@ -13,3 +13,9 @@ val = fib(3)
 proc = fib
 
 print(val, proc)
+y = proc(4)
+print(y)
+
+G = lambda x: x**2 if x>0 else -1
+u = G(10)
+print(u)
