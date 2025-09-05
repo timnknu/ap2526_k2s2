@@ -9,21 +9,12 @@ def fib(n):
 # for i in range(3, 10):
 #     print(i, fib(i))
 
-def modifier():
+def modifier(F):
     def newfunc(x):
-        return x+1
+        return F(x)+1
     return newfunc
 
-G = modifier()
+square = lambda x: x**2
+G = modifier(square)
 
-#print(G(10))
-
-def beautifier(func):
-    print('------')
-    func()
-    print('********')
-
-def print_copyright():
-    print('Copyright (c) ........')
-
-beautifier(print_copyright)
+print(G(10))
