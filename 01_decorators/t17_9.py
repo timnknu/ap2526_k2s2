@@ -14,7 +14,9 @@ def modifier(F):
         return F(x)+1
     return newfunc
 
-square = lambda x: x**2
-G = modifier(square)
-
-print(G(10))
+@modifier
+def square(x):
+    return x**2
+print(square(20))
+#G = modifier(square)
+#print(G(10))
