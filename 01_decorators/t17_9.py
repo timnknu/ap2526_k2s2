@@ -6,16 +6,14 @@ def fib(n):
         return 1
     return fib(n-1) + fib(n-2)
 
-for i in range(3, 10):
-    print(i, fib(i))
+# for i in range(3, 10):
+#     print(i, fib(i))
 
-val = fib(3)
-proc = fib
+def modifier():
+    def newfunc(x):
+        return x+1
+    return newfunc
 
-print(val, proc)
-y = proc(4)
-print(y)
+G = modifier()
 
-G = lambda x: x**2 if x>0 else -1
-u = G(10)
-print(u)
+#print(G(10))
