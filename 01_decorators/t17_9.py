@@ -17,3 +17,13 @@ def modifier():
 G = modifier()
 
 #print(G(10))
+
+def beautifier(func):
+    print('------')
+    func()
+    print('********')
+
+def print_copyright():
+    print('Copyright (c) ........')
+
+beautifier(print_copyright)
