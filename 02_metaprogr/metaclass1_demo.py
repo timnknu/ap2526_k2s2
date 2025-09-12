@@ -17,6 +17,8 @@ class MyMetaClass(type):
         print('-->', res)
         return res
 
+nObjects = 0
+
 class A(metaclass=MyMetaClass): # за замовчуванням (якщо нічого не вказувати) тут metaclass=type
     def square(self, x):
         print('This is square()')
@@ -25,12 +27,24 @@ class A(metaclass=MyMetaClass): # за замовчуванням (якщо ні
         print(">>I'm a A's constructor")
         self.xarg = x
     def __new__(*args, **kwargs):
-        print('__new__ from A:', args, kwargs)
-        res = object.__new__(args[0], **kwargs)
-        print('object says:', res)
-        return res
+        global nObjects
+        if nObjects > 5:
+            print("Забагато об'єктів")
+            raise ValueError
+        else:
+            nObjects += 1
+            print(f'__new__ from A {nObjects}:', args, kwargs)
+            res = object.__new__(args[0], **kwargs)
+            print('object says:', res)
+            return res
 
-
+print('=======================================')
 obj = A('hello')
 print(obj.square(12))
 print(type(obj))
+print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+secondObject = A('world')
+print(secondObject.square(14))
+print('******************')
+for i in range(10):
+    y = A('new one')
