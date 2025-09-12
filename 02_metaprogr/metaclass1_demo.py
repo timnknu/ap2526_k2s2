@@ -1,20 +1,22 @@
 class MyMetaClass(type):
-    def __new__(*args, **kwargs):
-        print('Metaclass __new__', args, kwargs)
-        res = type.__new__(*args)
+    def __new__(cls, class_name, bases, members_dict, max_num_objs = 1):
+        cls.max_num_objs = max_num_objs
+        cls.nObjects = 0
+        print('Metaclass __new__', cls, class_name, bases, members_dict)
+        print('max_num_objs', max_num_objs)
+        res = type.__new__(cls, class_name, bases, members_dict)
         print('-->', res)
         return res
 
     def __init__(cls, class_name, bases, attrs_dict, **kwargs):
 
         def alternative_new(*args, **kwargs):
-            global nObjects
-            if nObjects > 5:
+            if cls.nObjects > cls.max_num_objs:
                 print("Забагато об'єктів")
                 raise ValueError
             else:
-                nObjects += 1
-                print(f'__new__ from A {nObjects}:', args, kwargs)
+                cls.nObjects += 1
+                print(f'__new__ from A {cls.nObjects}:', args, kwargs)
                 res = object.__new__(args[0], **kwargs)
                 print('object says:', res)
                 return res
@@ -33,7 +35,7 @@ class MyMetaClass(type):
 
 nObjects = 0
 
-class A(metaclass=MyMetaClass, yetonemorearg=128): # за замовчуванням (якщо нічого не вказувати) тут metaclass=type
+class A(metaclass=MyMetaClass, max_num_objs=3): # за замовчуванням (якщо нічого не вказувати) тут metaclass=type
     def square(self, x):
         print('This is square()')
         return x**2
