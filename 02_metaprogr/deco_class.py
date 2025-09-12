@@ -1,8 +1,8 @@
-def strmagic_injector_universal(*args):
+def strmagic_injector_universal(args):
     def strmagic_injector(cls):
         def pretty_formatter(self):
             s = f"My very beautifu object has:"
-            for a in args:
+            for a in args: # або dir(obj):
                 s += f"{a} = {getattr(self, a)}, "
             return s
         cls.__str__ = pretty_formatter
@@ -10,11 +10,12 @@ def strmagic_injector_universal(*args):
         return cls
     return strmagic_injector
 
-@strmagic_injector_universal('par', 'b')
+@strmagic_injector_universal(['par', 'b'])
 class A:
     def __init__(self):
         self.par = 12
         self.b = 25.01
+        self.c = 128
 
 
 obj = A()
