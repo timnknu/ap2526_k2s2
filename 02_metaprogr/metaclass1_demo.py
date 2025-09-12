@@ -24,6 +24,11 @@ class A(metaclass=MyMetaClass): # за замовчуванням (якщо ні
     def __init__(self, x):
         print(">>I'm a A's constructor")
         self.xarg = x
+    def __new__(*args, **kwargs):
+        print('__new__ from A:', args, kwargs)
+        res = object.__new__(args[0], **kwargs)
+        print('object says:', res)
+        return res
 
 
 obj = A('hello')
