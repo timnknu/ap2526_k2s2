@@ -1,7 +1,7 @@
 class MyMetaClass(type):
     def __new__(*args, **kwargs):
         print('Metaclass __new__', args, kwargs)
-        res = type.__new__(*args, **kwargs)
+        res = type.__new__(*args)
         print('-->', res)
         return res
 
@@ -33,7 +33,7 @@ class MyMetaClass(type):
 
 nObjects = 0
 
-class A(metaclass=MyMetaClass): # за замовчуванням (якщо нічого не вказувати) тут metaclass=type
+class A(metaclass=MyMetaClass, yetonemorearg=128): # за замовчуванням (якщо нічого не вказувати) тут metaclass=type
     def square(self, x):
         print('This is square()')
         return x**2
