@@ -22,10 +22,10 @@ class A(metaclass=MyMetaClass): # за замовчуванням (якщо ні
         print('This is square()')
         return x**2
     def __init__(self, x):
+        print(">>I'm a A's constructor")
         self.xarg = x
 
 
-obj = object.__new__(A)
-obj.__init__('hello')
+obj = A('hello')
 print(obj.square(12))
 print(type(obj))
