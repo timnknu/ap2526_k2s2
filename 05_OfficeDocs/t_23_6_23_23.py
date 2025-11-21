@@ -1,3 +1,4 @@
+# задачі 23.23 та 23.6
 import docx
 import re
 
@@ -18,5 +19,8 @@ for par in d.paragraphs:
             new_text = re.sub(RE_PATT, my_repl_func, r.text)
             r.text = new_text
             r.font.color.rgb = new_color
+
+            r.font.size = docx.shared.Pt(24) # збільшимо шрифт у відредагованій частині
+
 
 d.save('new_doc1.docx')
