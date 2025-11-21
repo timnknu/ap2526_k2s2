@@ -20,6 +20,5 @@ def fib(n):
         return 1
     return fib(n-1) + fib(n-2)
 
-print(fib(4))
-print('----------')
-print(fib(5))
+for i in range(1, 40):
+    print(fib(i))
