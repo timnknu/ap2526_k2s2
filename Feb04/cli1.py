@@ -11,17 +11,26 @@ try:
     userid = input("Enter you nickname:")
     assert userid.find(',') == -1
     towhom = input("To whom you would like to send a message?")
-    assert towhom.find(',') == -1
-    msg = input("Now enter your message")
+    if len(towhom) == 0:
+        # якщо нікому не відправляємо, значить хочемо отримати повідомлення, накопичені на сервері для нас
+        msg = ''
+        data_to_send = f'{userid},{towhom},{msg}'
+        s.sendall( data_to_send.encode() )
+        data = s.recv(1024)     # отримати відповідь сервера
+        ds = data.decode()
+        print(ds)
+    else:
+        assert towhom.find(',') == -1
+        msg = input("Now enter your message")
 
-    data_to_send = f'{userid},{towhom},{msg}'
-    print('[debug] sending to server:', data_to_send)
+        data_to_send = f'{userid},{towhom},{msg}'
+        print('[debug] sending to server:', data_to_send)
 
-    s.sendall( data_to_send.encode() )
+        s.sendall( data_to_send.encode() )
 
-    data = s.recv(1024)     # отримати відповідь сервера
-    ds = data.decode()
-    print(ds)
+        data = s.recv(1024)     # отримати відповідь сервера
+        ds = data.decode()
+        print(ds)
 except:
     print('Помилка')
     traceback.print_exc()

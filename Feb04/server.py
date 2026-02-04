@@ -35,6 +35,12 @@ try:
         print('>> to:', towhom)
         print('>> message:', msg)
 
+        if towhom not in storage:
+            storage[towhom] = []
+        L = storage[towhom]
+        L.append( (senderid, msg) )
+        print('[debug] storage:', storage)
+
         resp = 'ok'
         conn.sendall( resp.encode() )
         conn.close()  # закрити з'єднання
