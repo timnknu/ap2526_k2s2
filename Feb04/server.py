@@ -34,16 +34,28 @@ try:
         print('>> from:', senderid)
         print('>> to:', towhom)
         print('>> message:', msg)
+        if len(towhom) == 0:
+            print('[debug] storage:', storage)
+            L = storage[senderid]
+            for item in L:
+                print(f'[debug] sending {item} to {senderid}')
+                resp = str(item) + '\n'
+                conn.sendall( resp.encode() )
+            L.clear()
+            print('[debug] storage:', storage)
+            resp = '\nFINISH'
+            conn.sendall( resp.encode() )
+            conn.close()  # закрити з'єднання
+        else:
+            if towhom not in storage:
+                storage[towhom] = []
+            L = storage[towhom]
+            L.append( (senderid, msg) )
+            print('[debug] storage:', storage)
 
-        if towhom not in storage:
-            storage[towhom] = []
-        L = storage[towhom]
-        L.append( (senderid, msg) )
-        print('[debug] storage:', storage)
-
-        resp = 'ok'
-        conn.sendall( resp.encode() )
-        conn.close()  # закрити з'єднання
+            resp = 'ok'
+            conn.sendall( resp.encode() )
+            conn.close()  # закрити з'єднання
 except KeyboardInterrupt:
     print('Дочасне завершення програми через Ctrl+C або його аналог')
 except:

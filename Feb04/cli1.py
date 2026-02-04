@@ -16,9 +16,12 @@ try:
         msg = ''
         data_to_send = f'{userid},{towhom},{msg}'
         s.sendall( data_to_send.encode() )
-        data = s.recv(1024)     # отримати відповідь сервера
-        ds = data.decode()
-        print(ds)
+        while True:
+            data = s.recv(1024)     # отримати відповідь сервера
+            ds = data.decode()
+            print(ds)
+            if ds.find('\nFINISH') != -1:
+                break
     else:
         assert towhom.find(',') == -1
         msg = input("Now enter your message")
