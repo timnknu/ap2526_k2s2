@@ -8,17 +8,12 @@ PORT = 15555              # Порт для з'єднання
 
 class MyClientHandler(socketserver.StreamRequestHandler):
     def handle(self):
-        client_socker = self.request
-        print('Request from client', client_socker)
         print(self.client_address)
         print('-------')
         all_received_data = b''
-        print(type(self.rfile), type(self.wfile))
         while True:
-            data = client_socker.recv(1024)
+            data = self.rfile.read(88)
             all_received_data = all_received_data + data
-            if len(all_received_data) == 150:
-                break
             print('data from client socket:', data)
             if len(data)==0:
                 print('recv returned empty array')
