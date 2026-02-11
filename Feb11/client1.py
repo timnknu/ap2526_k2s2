@@ -12,11 +12,15 @@ print('Connection established')
 time.sleep(3)
 
 print('sending data...')
-txt = 'MESSAGE!MESSAGE!MESSAGE!MESSAGE!MESSAGE!MESSAGE!MESSAGE!MESSAGE!'
+
+content = 'THIS IS FILE CONTENT'
+bts = content.encode()
+print(len(content), len(bts))
+
+txt = f'PUT filename.txt {len(bts)}\n'
 s.sendall( txt.encode() )
 time.sleep(3)
-txt = '222222222222222222222222'
-s.sendall( txt.encode() )
+s.sendall( bts )
 
 
 time.sleep(10)

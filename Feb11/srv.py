@@ -5,21 +5,29 @@ HOST = ''                 # Комп'ютер для з'єднання
 PORT = 15555              # Порт для з'єднання
 
 
-
 class MyClientHandler(socketserver.StreamRequestHandler):
     def handle(self):
         print(self.client_address)
         print('-------')
         all_received_data = b''
-        while True:
-            data = self.rfile.read(88)
-            all_received_data = all_received_data + data
-            print('data from client socket:', data)
-            if len(data)==0:
-                print('recv returned empty array')
-                break
+        # PUT <filename> 12345000\n
+        # <bytes of data -- 1234500>
+        header = self.rfile.readline()
+        hs = header.decode()
+        print(hs, type(hs))
+        cmd, fnm, len_as_str = hs.split()
+        L = int(len_as_str)
+        print('we are about to receive', L)
+
+        with open(fnm, 'wb') as fo:
+            data = self.rfile.read(L)
+            if len(data) == L:
+                print('Data received')
+                fo.write(data)
+            else:
+                print(len(data))
+                print('Помилка: Ми отримати не ту кількість байтів, яку очікували!')
         print('LOOP FINISHED')
-        print('ALL DATA IS', all_received_data)
 
         ######
 
