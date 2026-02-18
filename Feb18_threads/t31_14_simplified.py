@@ -1,5 +1,8 @@
 import os
 import time
+import threading
+
+event_terminate = threading.Event()
 
 def get_dir_contents(folder_path):
     res = {} # full_file_name -> (file_size, mtime)
@@ -12,7 +15,7 @@ def get_dir_contents(folder_path):
 
 
 def monitor_folder_changes(folder_path = '/tmp'):
-    monitoring_interval = 2.0
+    monitoring_interval = 5.0
     prev_snapshot = get_dir_contents(folder_path)
 
     while True:
@@ -31,6 +34,27 @@ def monitor_folder_changes(folder_path = '/tmp'):
                 print(f'Deleted: {full_file_name}')
         #
         prev_snapshot = new_snapshot
+        if event_terminate.is_set():
+            print('Thread was informed that it needs to terminate!')
+            break
 #
 
-monitor_folder_changes('.')
+th1 = threading.Thread(target=monitor_folder_changes, args=('/tmp',))
+th2 = threading.Thread(target=monitor_folder_changes, args=('.',))
+
+print('Threads created')
+
+th1.start()
+th2.start()
+
+print('Threads started')
+
+try:
+    th1.join()
+    th2.join()
+except KeyboardInterrupt:
+    print('Interruption via Ctrl-C detected')
+    event_terminate.set()
+
+
+print('Program is finished')
