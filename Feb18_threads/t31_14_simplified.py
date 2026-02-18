@@ -1,6 +1,10 @@
 import os
 import time
 import threading
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
 
 event_terminate = threading.Event()
 
@@ -15,46 +19,50 @@ def get_dir_contents(folder_path):
 
 
 def monitor_folder_changes(folder_path = '/tmp'):
-    monitoring_interval = 5.0
+    monitoring_interval = 1.0
     prev_snapshot = get_dir_contents(folder_path)
 
     while True:
-        time.sleep(monitoring_interval)
+        if event_terminate.wait(monitoring_interval):
+            logging.debug('Thread was informed that it needs to terminate!')
+            break
+        else:
+            logging.debug(' .wait() returned false')
+
+        if folder_path=='/tmp':
+            1/0
+
         new_snapshot = get_dir_contents(folder_path)
         for full_file_name, new_file_info in new_snapshot.items():
             if full_file_name in prev_snapshot:
                 old_file_info = prev_snapshot[full_file_name]
                 if old_file_info != new_file_info:
-                    print(f'in file {full_file_name}: contents changed')
+                    logging.info(f'in file {full_file_name}: contents changed')
             else:
-                print(f'NEW FILE: {full_file_name}')
+                logging.info(f'NEW FILE: {full_file_name}')
         #
         for full_file_name, new_file_info in prev_snapshot.items():
             if full_file_name not in new_snapshot:
-                print(f'Deleted: {full_file_name}')
+                logging.info(f'Deleted: {full_file_name}')
         #
         prev_snapshot = new_snapshot
-        if event_terminate.is_set():
-            print('Thread was informed that it needs to terminate!')
-            break
 #
 
 th1 = threading.Thread(target=monitor_folder_changes, args=('/tmp',))
 th2 = threading.Thread(target=monitor_folder_changes, args=('.',))
 
-print('Threads created')
+logging.debug('Threads created')
 
 th1.start()
 th2.start()
 
-print('Threads started')
+logging.debug('Threads started')
 
 try:
     th1.join()
     th2.join()
 except KeyboardInterrupt:
-    print('Interruption via Ctrl-C detected')
+    logging.info('Interruption via Ctrl-C detected')
     event_terminate.set()
 
-
-print('Program is finished')
+logging.info('Program is finished')
