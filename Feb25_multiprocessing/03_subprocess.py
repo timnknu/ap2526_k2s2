@@ -8,12 +8,15 @@ fin = open('inp.txt')
 
 pr = subprocess.Popen(args,
                       stdin=fin,
-                      stdout=None,
+                      stdout=subprocess.PIPE,
                       stderr=None
                       )
 
 pr.wait()
 
+print('SUBPROCESS IS FINISHED')
+
+print('THE OUTPUT WAS:', pr.stdout.read())
 
 fin.close()
 
