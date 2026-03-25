@@ -6,7 +6,12 @@ PORT = 15555              # Порт для з'єднання
 
 
 class MyClientHandler(http.server.SimpleHTTPRequestHandler):
-    pass
+    def do_GET(self):
+        print('Process GET', self.path)
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write("<h1>PAGE!!!</h1>".encode())
+
 
 ####################
 
