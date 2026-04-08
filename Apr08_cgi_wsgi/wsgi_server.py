@@ -32,10 +32,10 @@ def f(environ, start_response):
         post_data = environ['wsgi.input'].read(cl)
         post_data_dict = urllib.parse.parse_qs(post_data.decode())
         usertext = ''.join(post_data_dict.get('usertext', []))
-
+        nwords = len(usertext.split())
         with open('resp1.html') as f:
             txt = f.read()
-        s = txt.format(nwords = len(usertext.split()))
+        s = txt.format(**vars())
 
 
         return [s.encode()]
