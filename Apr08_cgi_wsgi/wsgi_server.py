@@ -13,33 +13,16 @@ def f(environ, start_response):
     if pth == "/":
         headers = [('Content-type', 'text/html')]  # HTTP Headers
         start_response(status, headers)
-        txt = """
-        <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-</head>
+        with open('main_page_wsgi.html') as f:
+            txt = f.read()
 
-<body>
- <h1>Це моя форма</h1>
- <form action="http://localhost:15555/processform?a=b" method="POST">
-     <input type="text" name="usertext">
-     <input type="submit" value="Відправити">
- </form>
-
-
-</body>
-
-</html>"""
         return [txt.encode()]
     elif pth == "/processform":
 
-        headers = [('Content-type', 'text/plain')]  # HTTP Headers
+        headers = [('Content-type', 'text/html')]  # HTTP Headers
         start_response(status, headers)
         qs = environ['QUERY_STRING']
         cl = environ.get('CONTENT_LENGTH', '')
-        get_data_dict = urllib.parse.parse_qs(qs)
-
 
         try:
             cl = int(cl)
@@ -47,11 +30,11 @@ def f(environ, start_response):
             cl = 0
 
         post_data = environ['wsgi.input'].read(cl)
+        post_data_dict = urllib.parse.parse_qs(post_data.decode())
+        usertext = ''.join(post_data_dict.get('usertext', []))
+        nwords = len(usertext.split())
+        txt = f"""<html><body>number of words: {nwords}</body></html"""
 
-
-        txt = "This is the data:\n"
-        txt += str(get_data_dict) + "\n"
-        txt += str(post_data)
 
         return [txt.encode()]
     else:
