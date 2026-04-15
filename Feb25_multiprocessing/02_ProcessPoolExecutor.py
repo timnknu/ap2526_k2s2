@@ -1,5 +1,6 @@
 import concurrent.futures
 import random
+import multiprocessing as mp
 
 def place_points(nPoints):
     print('Our function is called', nPoints)
@@ -13,6 +14,9 @@ def place_points(nPoints):
     # nInside/nPoints == (pi * 1**2 / 4) / 1**2 = pi/4
     return (nInside, nPoints)
 
+
+print('HELLO')
+print('__name__ is', __name__)
 
 if __name__ == '__main__':
     nPts = [50_000, 100_000, 500_000, 1_000_000, 5_000_000, 10_000_000, 50_000_000, 100_000_000]

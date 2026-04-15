@@ -2,7 +2,7 @@ import multiprocessing as mp
 import random
 
 def place_points(nPoints):
-    print('Our function is called')
+    print('Our function is called', nPoints)
     nInside = 0
     for i in range(nPoints):
         x = random.random()
@@ -16,13 +16,13 @@ def place_points(nPoints):
 
 if __name__ == '__main__':
     print('There are', mp.cpu_count(), 'cores')
-    with mp.Pool(
-            #processes=4
-    ) as pool:         # start 4 worker processes
-        nPts = [50000000 ] * 30
+    with mp.Pool(processes=4) as pool:         # start 4 worker processes
+        nPts = [50_000, 100_000, 500_000, 1_000_000, 5_000_000, 10_000_000, 50_000_000, 100_000_000 ]
         print(nPts)
         result = pool.map(place_points, nPts)
         print(result)
-    pi_estimate = sum(result) / sum(nPts) * 4
-    print(pi_estimate)
+    #
+    for one_nInside, one_nPoints in zip(result, nPts):
+        pi_estimate = one_nInside / one_nPoints * 4
+        print(one_nInside, one_nPoints, pi_estimate)
 
