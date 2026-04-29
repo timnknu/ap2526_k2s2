@@ -1,14 +1,22 @@
 # custom functions for sqlite
 
 import sqlite3
+import re
 
 conn = sqlite3.connect('../Apr22_databases1/db1')
 
 conn.row_factory = sqlite3.Row
 
 def myfuncimpl(*args):
-    print('myfuncimpl called with', args)
-    return -100500
+    d = args[0]
+    if re.match(r'\d{4}-\d{2}-\d{2}', d):
+        return d
+    elif re.match(r'\d{2}-\d{2}-\d{4}', d):
+        vals = d.split('-')
+        res = vals[2] + '-' + vals[0] + '-' + vals[1]
+        return res
+    else:
+        raise ValueError('Wrong date format')
 
 conn.create_function('myf', -1, myfuncimpl)
 
