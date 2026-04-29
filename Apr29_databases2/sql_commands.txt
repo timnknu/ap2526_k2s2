@@ -1,0 +1,142 @@
+SELECT * FROM
+(
+  SELECT 12 as txt, 'hello' as world
+  UNION ALL
+  SELECT 35 as txt, 'WWW' as world
+);
+
+SELECT id, txt, txt=='orange' FROM
+(
+  SELECT 12 as id, 'orange' as txt
+  UNION ALL
+  SELECT 35 as id, 'in range' as txt
+);
+
+
+
+SELECT id, txt, txt LIKE '%range' FROM
+(
+  SELECT 12 as id, 'orange' as txt
+  UNION ALL
+  SELECT 35 as id, 'in range' as txt
+);
+
+
+https://en.wikipedia.org/wiki/Glob_(programming)
+
+https://www.geeksforgeeks.org/linux-unix/file-globbing-linux/
+
+SELECT *, date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' as corr from brth;
+
+SELECT *, date LIKE '____-__-__' as corr from brth;
+
+
+https://www.sqlite.org/lang_expr.html#the_case_expression
+
+SELECT *,
+CASE date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+WHEN 1 THEN 'yes'
+WHEN 0 THEN 'no'
+ELSE 'error'
+END
+as checkres
+FROM brth;
+
+
+
+
+SELECT *,
+CASE date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+WHEN 1 THEN date
+WHEN 0 THEN substr(date, 4, 2)
+ELSE 'error'
+END
+as checkres
+FROM brth;
+
+
+SELECT txt, 'THIS IS' || substr(txt, 4, 5) || 'WWW' as r
+FROM
+(
+SELECT 'hello world' as txt
+);
+
+
+
+SELECT *,
+CASE date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+WHEN 1 THEN date
+WHEN 0 THEN substr(date, 7, 4) || '-' || substr(date, 1, 2) || '-' || substr(date, 4, 2)
+ELSE 'error'
+END
+as checkres
+FROM brth;
+
+
+select strftime('%Y : %m,  %d / %H-%M-%S', 'now', '-48 hours', 'localtime');
+
+
+
+select * FROM
+(
+select strftime('%J', 'now') as D
+);
+
+
+select strftime('%Y : %m,  %d / %H-%M-%S', D0, 'julianday'), D, D0
+ FROM
+(
+select strftime('%J', 'now') as D0, strftime('%s', 'now') as D
+);
+
+
+
+SELECT *, strftime('%J', validdate) as Y
+FROM
+(
+SELECT *,
+CASE date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+WHEN 1 THEN date
+WHEN 0 THEN substr(date, 7, 4) || '-' || substr(date, 1, 2) || '-' || substr(date, 4, 2)
+ELSE 'error'
+END
+as validdate
+FROM brth
+);
+
+
+
+
+SELECT validdate,
+julianday(strftime('1990-%m-%d', validdate))- julianday(strftime('1990-%m-%d', currdate)),
+timediff(strftime('1990-%m-%d', validdate), strftime('1990-%m-%d', currdate))
+FROM
+(
+SELECT *,
+CASE date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+WHEN 1 THEN date
+WHEN 0 THEN substr(date, 7, 4) || '-' || substr(date, 1, 2) || '-' || substr(date, 4, 2)
+ELSE 'error'
+END
+as validdate,
+strftime('%Y-%m-%d', 'now', 'localtime') as currdate
+FROM brth
+);
+
+
+
+SELECT validdate,
+julianday(strftime('1990-%m-%d', validdate))- julianday(strftime('1990-%m-%d', currdate))
+FROM
+(
+SELECT *,
+CASE date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+WHEN 1 THEN date
+WHEN 0 THEN substr(date, 7, 4) || '-' || substr(date, 1, 2) || '-' || substr(date, 4, 2)
+ELSE 'error'
+END
+as validdate,
+strftime('%Y-%m-%d', 'now', 'localtime') as currdate
+FROM brth
+);
+
