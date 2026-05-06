@@ -7,9 +7,25 @@ HOST = ''                 # Комп'ютер для з'єднання
 PORT = 15555              # Порт для з'єднання
 
 import queue
+import threading
 
 user_to_func = queue.Queue()
 func_to_user = queue.Queue()
+
+def thread_func():
+    while True:
+        req = user_to_func.get()
+        #####....обробка....
+        txt = 'Request was: '+ str(req)
+        func_to_user.put(
+            (
+                200, # resp_code
+                [],
+                txt.encode()
+            )
+        )
+
+threading.Thread(target=thread_func, daemon=True).start()
 
 class MyClientHandler(http.server.SimpleHTTPRequestHandler):
     def _communicate(self, data_for_func):
