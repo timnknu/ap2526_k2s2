@@ -44,6 +44,15 @@ GROUP BY books.bookId
 
 -----
 
+https://www.sqlite.org/syntax/join-operator.html
+
+https://www.w3schools.com/sql/sql_join.asp
+https://www.geeksforgeeks.org/sql/sql-join-set-1-inner-left-right-and-full-joins/
+
+https://sqlite.org/lang_aggfunc.html#group_concat
+
+-----
+
 
 
 автори
