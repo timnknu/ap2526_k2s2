@@ -1,6 +1,7 @@
 import http.server
 import traceback
 import urllib
+import re
 
 from pyasn1_modules.rfc4985 import srvName
 
@@ -13,6 +14,8 @@ import threading
 user_to_srv = queue.Queue()
 srv_to_user = queue.Queue()
 
+# URL: http://domain/<user-id>/script?param=value&...
+
 def thread_func():
     def web_input(body_str, resp_code = 200, headers_list = []):  # prompt: ()
         srv_to_user.put(
@@ -20,17 +23,20 @@ def thread_func():
         )
         return user_to_srv.get()
     #
+    print('>>user session started')
     # сесія взаємодії з користувачем
-    res = web_input("""<!DOCTYPE html>
-    <html>
-    <body>Hello! This is first page!<br>
-              <a href="/script?x=12345">Press me!</a>
-    </body>
-    </html>""")
+    with open('quest1.html') as f:
+        txt = f.read()
+    res = web_input(txt)
     print(res)
-    res = web_input("This is the second page\n" + str(res),
-                    headers_list=[('Content-type', 'text/plain')])
+    print('>>first web_input finished')
+
+    with open('res1.html') as f:
+        txt = f.read()
+        txt = txt.replace('###ABC###', str(res))
+    res = web_input(txt)
     print(res)
+    print('>>second web_input finished')
 
 
 
@@ -39,7 +45,7 @@ threading.Thread(target=thread_func, daemon=True).start()
 class MyClientHandler(http.server.SimpleHTTPRequestHandler):
     def _communicate(self, data_for_func):
         path = data_for_func[1]
-        if path.startswith('/script'):
+        if re.match(r'/\d+/script', path):
             user_to_srv.put(data_for_func)
 
             res = srv_to_user.get()  # (resp_code, [headers], body_bytes)
@@ -62,6 +68,10 @@ class MyClientHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         print('Process GET', self.path)
+        # if self.path == '/':
+        #     with open('index.html') as f:
+        #         txt = f.read()
+
         self._communicate( ('GET', self.path, {}) )
 
     def do_POST(self):
